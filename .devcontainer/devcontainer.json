@@ -1,0 +1,39 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+        "name": "C++",
+        "features": {},
+        "image": "mcr.microsoft.com/devcontainers/cpp:1-ubuntu-24.04",
+        "postCreateCommand": "bash -ic .devcontainer/setup.sh",
+        "customizations": {
+                "vscode": {
+                        "settings": {
+                                "terminal.integrated.defaultProfile.linux": "zsh",
+                                "terminal.integrated.enablePersistentSessions": false,
+                                "terminal.integrated.profiles.linux": {
+                                        "zsh": {
+                                                "path": "/usr/bin/zsh",
+                                                "args": ["--login"]
+                                        }
+                                }
+                        },
+                        "extensions": [
+                                "ms-vscode.cmake-tools",
+                                "ms-vscode.cpptools",
+                                "tamasfe.even-better-toml",
+                                "ms-python.python",
+                                "ms-python.vscode-pylance",
+                                "ms-python.debugpy",
+                                "surajbarkale.ninja",
+                                "timonwong.shellcheck",
+                                "bmalehorn.shell-syntax",
+                                "ms-vscode.cpptools-extension-pack",
+                                "ms-vscode.cpptools-themes",
+                                "mesonbuild.mesonbuild"
+                        ]
+                },
+                "codespaces": {
+                        "repositories": {}
+                }
+        }
+}

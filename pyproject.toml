@@ -1,0 +1,25 @@
+[tool.pyprojectx]
+main = ["pdm","ruff","pre-commit","px-utils"]
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pybind11>=2.13.4",
+]
+[project]
+name = "python-extension-demo"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Janusz Dziurzynski", email = "janusz@corechain.tech"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
