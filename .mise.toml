@@ -1,0 +1,62 @@
+[settings]
+experimental = true
+
+[tasks.setup]
+run = """
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+wget -O - http://download.sgjp.pl/apt/sgjp.gpg.key|sudo apt-key add -
+sudo apt-add-repository http://download.sgjp.pl/apt/ubuntu
+sudo apt-get update
+sudo apt-get install -y morfeusz2 morfeusz2-dictionary-polimorf morfeusz2-dictionary-sgjp libmorfeusz2-dev
+
+./pw pdm install
+./pw pre-commit
+"""
+
+[tasks."build:lib"]
+sources = ["src/python_extension_demo/python_extension_demo.cpp", "src/python_extension_demo/python_extension_demo.hpp"]
+outputs = ["libpython_extension_demo.so"]
+run = """
+c++ \
+   -O3 -Wall -std=c++11 -shared -fPIC \
+   ./src/python_extension_demo/python_extension_demo.cpp \
+   -I"/usr/include/python3.12" \
+   -I/workspaces/python-extension-demo/src/python_extension_demo \
+   -o libpython_extension_demo.so
+"""
+
+# [tasks."build:demo"]
+# sources = ["src/python_extension_demo/demo.cpp"]
+# outputs = ["demo"]
+# run = """
+# c++ -O3 -Wall -std=c++11 \
+#    -I"/usr/include/python3.12" \
+#    -I/workspaces/python-extension-demo/src/python_extension_demo \
+#    src/python_extension_demo/demo.cpp \
+#    -o demo \
+#    -L"${PWD}" \
+#    -lpython_extension_demo
+# """
+
+[tasks."build:bindings"]
+sources = ["src/python_extension_demo/morfeusz2.cpp", "python_extension_demo.hpp"]
+outputs = ["morfeusz2{{exec(command='python3-config --extension-suffix')}}"]
+depends = ["build:lib"]
+run ="""
+c++ -O3 -Wall -shared -std=c++11 -fPIC $(python3-config --includes) $(python -m pybind11 --includes) ./src/python_extension_demo/morfeusz2.cpp -o morfeusz2$(python3-config --extension-suffix) -L"${PWD}" -lpython_extension_demo
+"""
+
+[tasks."build:demo"]
+sources = ["src/python_extension_demo/demo.cpp"]
+outputs = ["demo"]
+dependencies = ["build:lib"]
+run = """
+c++ -O3 -Wall -std=c++11 \
+    src/python_extension_demo/demo.cpp \
+    -o demo \
+    -lmorfeusz2
+"""
+
+[tools]
+pdm = "latest"
